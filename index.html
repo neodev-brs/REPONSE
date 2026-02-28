@@ -483,9 +483,17 @@
       $("btnTheme").textContent = "Thème: " + (cur === "system" ? "auto" : cur);
     })();
 
-    document.querySelector(".fr-header").addEventListener("click", function () {
-    location.reload();
-    });
+    window.addEventListener("load", function () {
+        const header = document.querySelector(".fr-header");
+
+        if (header) {
+            header.style.cursor = "pointer";
+
+            header.addEventListener("click", function () {
+            window.location.reload(true);
+            });
+        }
+        });
 
   </script>
 
