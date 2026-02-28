@@ -477,12 +477,6 @@
     }
     $("btnTheme").addEventListener("click", cycleTheme);
 
-    // Init theme button label
-    (function initThemeLabel() {
-      let cur = document.documentElement.getAttribute("data-fr-scheme") || "system";
-      $("btnTheme").textContent = "Thème: " + (cur === "system" ? "auto" : cur);
-    })();
-
     window.addEventListener("load", function () {
         const header = document.querySelector(".fr-header");
 
