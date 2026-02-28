@@ -275,10 +275,10 @@
     };
 
     function showScreen(name) {
-      Object.values(screens).forEach(s => s.classList.remove("is-active"));
-      screens[name].classList.add("is-active");
-      $("btnResetTop").classList.toggle("hidden", name === "home");
-    }
+        Object.values(screens).forEach(s => s.classList.remove("is-active"));
+        screens[name].classList.add("is-active");
+        // plus de btnResetTop, donc on ne touche pas
+        }
 
     function qCurrent() { return QUESTIONS[state.idx]; }
 
@@ -452,7 +452,6 @@
     });
 
     $("btnRestart").addEventListener("click", resetAll);
-    $("btnResetTop").addEventListener("click", resetAll);
 
     $("btnCopy").addEventListener("click", async () => {
       try {
@@ -464,30 +463,20 @@
       }
     });
 
-    // Theme toggle (system / light / dark) simple
-    const THEME_KEY = "scheme";
-    const THEMES = ["system","light","dark"];
-    function cycleTheme() {
-      let cur = document.documentElement.getAttribute("data-fr-scheme") || "system";
-      let i = THEMES.indexOf(cur);
-      let next = THEMES[(i + 1) % THEMES.length];
-      document.documentElement.setAttribute("data-fr-scheme", next);
-      try { localStorage.setItem(THEME_KEY, next); } catch(e){}
-      $("btnTheme").textContent = "Thème: " + (next === "system" ? "auto" : next);
-    }
-    $("btnTheme").addEventListener("click", cycleTheme);
+        window.addEventListener("DOMContentLoaded", () => {
+            const header = document.querySelector(".fr-header");
+            if (!header) return;
 
-    window.addEventListener("load", function () {
-        const header = document.querySelector(".fr-header");
-
-        if (header) {
             header.style.cursor = "pointer";
 
-            header.addEventListener("click", function () {
-            window.location.reload(true);
+            // Capture=true pour être sûr même si DSFR stoppe des events
+            header.addEventListener("click", (e) => {
+                // si un jour tu ajoutes des boutons dans le header, on évite de casser
+                if (e.target.closest("button, a, input")) return;
+
+                window.location.reload();
+            }, true);
             });
-        }
-        });
 
   </script>
 
