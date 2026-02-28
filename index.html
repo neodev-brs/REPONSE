@@ -74,6 +74,18 @@
   padding-top: 10px;
 }
 
+  .reponse-credit {
+    position: fixed;
+    bottom: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.7rem;
+    color: #666;
+    opacity: 0.2;
+    pointer-events: none;
+    user-select: none;
+  }
+
   </style>
 </head>
 
@@ -82,7 +94,7 @@
   <div class="fr-header__body">
     <div class="fr-container">
       <div class="fr-header__body-row">
-        <div class="fr-header__brand fr-enlarge-link">
+        <div class="fr-header__brand fr-enlarge-link" id="headerHome">
           <div class="fr-header__brand-top">
             <div class="fr-header__logo">
               <p class="fr-logo">
@@ -470,6 +482,17 @@
       let cur = document.documentElement.getAttribute("data-fr-scheme") || "system";
       $("btnTheme").textContent = "Thème: " + (cur === "system" ? "auto" : cur);
     })();
+
+    // Retour accueil au clic sur le header
+    document.getElementById("headerHome").addEventListener("click", function () {
+    resetAll(); // remet tout à zéro
+    });
+
   </script>
+
+  <footer class="reponse-credit">
+  REPONSE 2026 - MDC HUGO BRES--MALANCHERE - DEMO ADI 2026
+</footer>
+
 </body>
 </html>
