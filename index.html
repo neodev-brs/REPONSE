@@ -483,9 +483,8 @@
       $("btnTheme").textContent = "Thème: " + (cur === "system" ? "auto" : cur);
     })();
 
-    // Retour accueil au clic sur le header
-    document.getElementById("headerHome").addEventListener("click", function () {
-    resetAll(); // remet tout à zéro
+    document.querySelector(".fr-header").addEventListener("click", function () {
+    location.reload();
     });
 
   </script>
