@@ -1,0 +1,475 @@
+<!doctype html>
+<html lang="fr" data-fr-scheme="system">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>REPONSE - Prise en compte des victimes de violences conjugales</title>
+
+    <!-- Favicon -->
+  <link rel="icon" type="image/png" href="https://www.interieur.gouv.fr/themes/custom/dsfr/src/images/logo/favicon.png">
+
+  <!-- DSFR (CDN) : mono-fichier, style GENESIS/GoFast -->
+  <link rel="icon" type="image/png" href="https://www.interieur.gouv.fr/themes/custom/dsfr/src/images/logo/favicon.png">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@gouvfr/dsfr@1.13.1/dist/dsfr/dsfr.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@gouvfr/dsfr@1.13.1/dist/dsfr/utility/utilities.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@gouvfr/dsfr@1.13.1/dist/utility/icons/icons.min.css">
+
+  <script>
+    // Évite le flash du thème
+    ;(function () {
+      try {
+        var saved = localStorage.getItem('scheme');
+        if (saved) document.documentElement.setAttribute('data-fr-scheme', saved);
+      } catch (e) {}
+    })();
+  </script>
+
+  <style>
+    :root { --pad: 14px; }
+    body { background: var(--background-alt-grey); }
+    .app { min-height: 100dvh; display: flex; flex-direction: column; }
+    .screen { display:none; padding: var(--pad); }
+    .screen.is-active { display:block; }
+    .card {
+      background: #fff;
+      border-radius: 14px;
+      padding: 16px;
+      box-shadow: 0 2px 12px rgba(0,0,0,.06);
+    }
+    .muted { opacity:.75; }
+    .question { font-size: 1.15rem; line-height: 1.35; margin: 0; }
+    .btn-grid { display:grid; grid-template-columns: 1fr; gap: 10px; margin-top: 14px; }
+    .nav-row { display:flex; gap: 10px; margin-top: 14px; }
+    .nav-row > button { flex:1; }
+    .cols { display:grid; grid-template-columns:1fr; gap: 12px; }
+    @media (min-width: 520px) { .cols { grid-template-columns:1fr 1fr; } }
+    .list-card { box-shadow:none; border:1px solid #e5e5e5; border-radius: 12px; padding: 12px; }
+    ul.clean { margin: 0; padding-left: 18px; }
+    ul.clean li { margin: 6px 0; }
+
+    .topbar {
+      padding: 10px var(--pad);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 10px;
+    }
+    .brand {
+      display:flex; align-items:center; gap:10px;
+      font-weight: 700;
+    }
+    .brand .dot {
+      width: 10px; height: 10px; border-radius: 999px;
+      background: var(--text-action-high-blue-france);
+    }
+    .actions { display:flex; gap:8px; align-items:center; }
+    .smallbtn { padding: 6px 10px; font-size: .9rem; }
+    .hidden { display:none !important; }
+
+    .fr-header {
+  box-shadow: 0 2px 8px rgba(0,0,0,.06);
+}
+
+.app {
+  padding-top: 10px;
+}
+
+  </style>
+</head>
+
+<body>
+  <header role="banner" class="fr-header">
+  <div class="fr-header__body">
+    <div class="fr-container">
+      <div class="fr-header__body-row">
+        <div class="fr-header__brand fr-enlarge-link">
+          <div class="fr-header__brand-top">
+            <div class="fr-header__logo">
+              <p class="fr-logo">
+                Ministère<br>de l’Intérieur
+              </p>
+            </div>
+          </div>
+          <div class="fr-header__service">
+            <p class="fr-header__service-title">REPONSE</p>
+            <p class="fr-header__service-tagline">
+              Prise en compte des victimes de violences conjugales
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+  <div class="app">
+
+    <!-- HOME -->
+    <main id="screen-home" class="screen is-active">
+      <div class="card">
+        <h1 class="fr-h4 fr-mb-1w">Violences familiales</h1>
+        <p class="fr-text--sm muted fr-mb-2w">
+          Questionnaire terrain → seuil de vigilance → orientations
+        </p>
+
+        <button id="btnStart" class="fr-btn fr-btn--lg fr-btn--icon-left fr-icon-play-line" type="button">
+          Démarrer
+        </button>
+
+        <div class="fr-alert fr-alert--info fr-mt-2w">
+          <p class="fr-alert__title">Rappel</p>
+          <p class="fr-text--sm fr-mb-0">
+            Le questionnaire complété n’a pas vocation à être transmis (victime/partenaires) sans autorisation judiciaire.
+          </p>
+        </div>
+
+        <p class="fr-text--xs muted fr-mt-2w">
+          Mode “mono-fichier” : DSFR est chargé via CDN (simple & léger).
+        </p>
+      </div>
+    </main>
+
+    <!-- QUIZ -->
+    <main id="screen-quiz" class="screen">
+      <div class="fr-progress">
+        <p class="fr-progress__label" id="progressLabel">Question</p>
+        <div class="fr-progress__bar" role="progressbar"
+             aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"
+             id="progressBar"></div>
+      </div>
+
+      <div class="card">
+        <div id="sensitiveBadgeWrap" class="fr-mb-1w hidden">
+          <span class="fr-badge fr-badge--warning">
+            <span class="fr-icon-alert-fill" aria-hidden="true"></span>
+            Point de vigilance
+          </span>
+        </div>
+
+        <p class="question" id="questionText">…</p>
+        <p class="fr-text--xs muted fr-mt-1w" id="questionHint"></p>
+
+        <div class="btn-grid">
+          <button class="fr-btn fr-btn--lg" data-answer="yes" type="button">Oui</button>
+          <button class="fr-btn fr-btn--lg fr-btn--secondary" data-answer="no" type="button">Non</button>
+          <button class="fr-btn fr-btn--lg fr-btn--tertiary" data-answer="unknown" type="button">NSP / Inconnu</button>
+        </div>
+
+        <div class="nav-row">
+          <button id="btnPrev" class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-arrow-left-line" type="button">
+            Précédent
+          </button>
+          <button id="btnNext" class="fr-btn fr-btn--icon-right fr-icon-arrow-right-line" type="button">
+            Suivant
+          </button>
+        </div>
+
+        <button id="btnCompute" class="fr-btn fr-btn--lg fr-btn--icon-left fr-icon-check-line fr-mt-2w" style="width:100%;" type="button">
+          Calculer & afficher les orientations
+        </button>
+
+        <p class="fr-text--xs muted fr-mt-1w">
+          Astuce : toucher “Oui/Non/NSP” passe automatiquement à la question suivante.
+        </p>
+      </div>
+    </main>
+
+    <!-- RESULT -->
+    <main id="screen-result" class="screen">
+      <div class="card">
+        <h2 class="fr-h5 fr-mb-1w">Résultat</h2>
+
+        <div class="fr-mb-1w">
+          <span id="badgeDecision" class="fr-badge fr-badge--info">…</span>
+        </div>
+
+        <p class="fr-text--sm muted fr-mb-2w" id="scoreLine">…</p>
+
+        <div class="cols">
+          <div class="list-card">
+            <h3 class="fr-h6 fr-mb-1w">À faire immédiatement</h3>
+            <ul class="clean" id="actionsNow"></ul>
+          </div>
+          <div class="list-card">
+            <h3 class="fr-h6 fr-mb-1w">À faire ensuite</h3>
+            <ul class="clean" id="actionsLater"></ul>
+          </div>
+        </div>
+
+        <div class="nav-row fr-mt-2w">
+          <button id="btnCopy" class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-file-copy-line" type="button">
+            Copier un résumé
+          </button>
+          <button id="btnRestart" class="fr-btn" type="button">
+            Nouvelle évaluation
+          </button>
+        </div>
+
+        <div id="copyToast" class="fr-alert fr-alert--success fr-mt-2w hidden">
+          <p class="fr-alert__title">Résumé copié</p>
+          <p class="fr-text--sm fr-mb-0">Tu peux le coller dans tes notes / procédure.</p>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@gouvfr/dsfr@1.13.1/dist/dsfr/dsfr.min.js"></script>
+
+  <script>
+    /***********************
+     * Données - Grille (23)
+     * - sensitive=true = "questions particulièrement sensibles" (celles en gras/rouge dans l'annexe)
+     * - Décision: vigilance si (>=2 sensibles positives) ET/OU (>=12 positives sur 23)
+     ***********************/
+    const QUESTIONS = [
+      { id:"q1",  text:"Êtes-vous blessé ?", sensitive:false },
+      { id:"q2",  text:"Craignez-vous de nouvelles violences (envers vous, vos enfants, proches, etc.) ?", sensitive:false },
+      { id:"q3",  text:"Votre partenaire/ancien partenaire a-t-il connaissance de votre projet de séparation ? Ou êtes-vous séparés ? (cherche-t-il à connaître votre lieu de résidence ?)", sensitive:true,  hint:"Séparation en cours/récente (point de vigilance)." },
+      { id:"q4",  text:"Vous sentez-vous isolé(e) de votre famille et/ou vos amis ?", sensitive:false },
+      { id:"q5",  text:"Avez-vous peur pour vous et/ou pour vos enfants ? Existe-t-il un risque de représailles ?", sensitive:false },
+      { id:"q6",  text:"Êtes-vous déprimé(e) ou sentez-vous « à bout », sans solution ?", sensitive:false },
+
+      { id:"q7",  text:"Votre partenaire/ancien partenaire possède-t-il des armes à feu (déclarées ou non) ?", sensitive:true, hint:"Arme (point de vigilance)." },
+      { id:"q8",  text:"Votre partenaire/ancien partenaire consomme-t-il de l’alcool, des drogues et/ou médicaments ?", sensitive:false },
+      { id:"q9",  text:"Votre partenaire/ancien partenaire a-t-il des antécédents psychiatriques ?", sensitive:true, hint:"Élément aggravant (point de vigilance selon grille)." },
+      { id:"q10", text:"À votre connaissance, votre partenaire/ancien partenaire a-t-il déjà blessé quelqu’un d’autre (notamment ancien partenaire) ?", sensitive:false },
+      { id:"q11", text:"À votre connaissance, votre partenaire/ancien partenaire a-t-il déjà eu des problèmes avec la justice ou la police ?", sensitive:false },
+      { id:"q12", text:"La police ou la gendarmerie est-elle déjà intervenue à votre domicile ?", sensitive:false },
+      { id:"q13", text:"Votre partenaire/ancien partenaire a-t-il déjà tenté ou menacé de se suicider ?", sensitive:false },
+
+      { id:"q14", text:"Votre partenaire/ancien partenaire s’est-il déjà montré violent envers vous ?", sensitive:false },
+      { id:"q15", text:"La fréquence des violences a-t-elle augmenté récemment (verbales, physiques, sexuelles ou psychologiques) ?", sensitive:true, hint:"Augmentation/fréquence (point de vigilance)." },
+      { id:"q16", text:"Êtes-vous enceinte ou avez-vous un enfant de moins de deux ans ?", sensitive:false },
+      { id:"q17", text:"Votre partenaire/ancien partenaire essaie-t-il de contrôler ce que vous faites (vêtements, maquillage, sorties, travail…)?", sensitive:false },
+      { id:"q18", text:"Votre partenaire/ancien partenaire exerce-t-il une surveillance quotidienne / harcèlement (mails, SMS, appels, messages…)?", sensitive:false },
+      { id:"q19", text:"Votre partenaire/ancien partenaire vous empêche-t-il de disposer librement de votre argent ou de vos documents administratifs ?", sensitive:false },
+      { id:"q20", text:"Êtes-vous en difficultés financières ?", sensitive:false },
+      { id:"q21", text:"Votre partenaire/ancien partenaire a-t-il déjà menacé de vous tuer ou de tuer quelqu’un d’autre (enfant) ?", sensitive:true, hint:"Menace de mort (point de vigilance)." },
+      { id:"q22", text:"A-t-il précisé de quelle manière il projetait de le faire ?", sensitive:false },
+      { id:"q23", text:"Votre partenaire/ancien partenaire a-t-il évoqué ou commis des actes à caractère sexuel qui vous ont mis mal à l’aise, heurté votre sensibilité ou blessé(e) ?", sensitive:false }
+    ];
+
+    const state = {
+      idx: 0,
+      answers: Object.fromEntries(QUESTIONS.map(q => [q.id, null])),
+      last: null
+    };
+
+    const $ = (id) => document.getElementById(id);
+    const screens = {
+      home: $("screen-home"),
+      quiz: $("screen-quiz"),
+      result: $("screen-result")
+    };
+
+    function showScreen(name) {
+      Object.values(screens).forEach(s => s.classList.remove("is-active"));
+      screens[name].classList.add("is-active");
+      $("btnResetTop").classList.toggle("hidden", name === "home");
+    }
+
+    function qCurrent() { return QUESTIONS[state.idx]; }
+
+    function setProgress() {
+      const total = QUESTIONS.length;
+      const n = state.idx + 1;
+      $("progressLabel").textContent = `Question ${n}/${total}`;
+      const pct = Math.round((n / total) * 100);
+      $("progressBar").style.width = pct + "%";
+      $("progressBar").setAttribute("aria-valuenow", String(pct));
+    }
+
+    function renderQuestion() {
+      const q = qCurrent();
+      $("questionText").textContent = q.text;
+      $("questionHint").textContent = q.hint || "";
+      $("sensitiveBadgeWrap").classList.toggle("hidden", !q.sensitive);
+
+      setProgress();
+      $("btnPrev").disabled = state.idx === 0;
+      $("btnNext").disabled = state.idx === QUESTIONS.length - 1;
+    }
+
+    function setAnswer(value) {
+      state.answers[qCurrent().id] = value;
+    }
+
+    function countYesTotal() {
+      return Object.values(state.answers).filter(v => v === "yes").length;
+    }
+
+    function countYesSensitive() {
+      let c = 0;
+      for (const q of QUESTIONS) if (q.sensitive && state.answers[q.id] === "yes") c++;
+      return c;
+    }
+
+    function computeDecision() {
+      const yesTotal = countYesTotal();
+      const yesSensitive = countYesSensitive();
+      const vigilanceBySensitive = yesSensitive >= 2;
+      const vigilanceByTotal = yesTotal >= 12;
+      const vigilance = vigilanceBySensitive || vigilanceByTotal;
+      return { yesTotal, yesSensitive, vigilance, vigilanceBySensitive, vigilanceByTotal };
+    }
+
+    function buildRecommendations(decision) {
+      // Recos structurées "maintenant / ensuite" (base annexe X), gardées sobres
+      const now = [
+        "Isoler la victime.",
+        "Mettre en sécurité les enfants.",
+        "Vérifier la présence d’armes (questionnement + mesures adaptées).",
+        "Rendre compte (CR) à l’OPJ / permanence.",
+        "Si nécessaire : mise à l’abri / accompagnement pour effets de première nécessité (papiers, CB, médocs, affaires enfants)."
+      ];
+
+      const later = [
+        "Orientation vers dispositifs d’aide aux victimes (associations, accompagnement).",
+        "Évaluation / mise en sécurité logement (hébergement, tiers, etc.).",
+        "Propositions de mesures adaptées selon cadre (TGD, OP, BAR, etc.).",
+        "Remise des coordonnées utiles / ressources."
+      ];
+
+      if (decision.vigilance) {
+        now.unshift("⚠️ Vigilance déclenchée : adapter immédiatement la conduite à tenir au niveau de risque.");
+      }
+
+      return { now, later };
+    }
+
+    function setBadge(decision) {
+      const badge = $("badgeDecision");
+      badge.className = "fr-badge";
+      if (decision.vigilance) {
+        badge.classList.add("fr-badge--warning");
+        badge.textContent = "VIGILANCE — seuil atteint";
+      } else {
+        badge.classList.add("fr-badge--success");
+        badge.textContent = "Vigilance non déclenchée";
+      }
+    }
+
+    function renderResults() {
+      const decision = computeDecision();
+      setBadge(decision);
+
+      const parts = [
+        `Positifs : ${decision.yesTotal}/23`,
+        `Points de vigilance positifs : ${decision.yesSensitive}`
+      ];
+      if (decision.vigilanceBySensitive) parts.push("Seuil vigilance (sensibles) : ≥2");
+      if (decision.vigilanceByTotal) parts.push("Seuil vigilance (total) : ≥12/23");
+
+      $("scoreLine").textContent = parts.join(" — ");
+
+      const recos = buildRecommendations(decision);
+      $("actionsNow").innerHTML = recos.now.map(x => `<li>${escapeHtml(x)}</li>`).join("");
+      $("actionsLater").innerHTML = recos.later.map(x => `<li>${escapeHtml(x)}</li>`).join("");
+
+      state.last = { decision, recos };
+    }
+
+    function escapeHtml(s) {
+      return String(s)
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+
+    function buildCopyText() {
+      const last = state.last;
+      if (!last) return "VIF — (pas de résultat calculé)";
+      const { decision, recos } = last;
+
+      const lines = [];
+      lines.push("VIF — Évaluation du danger");
+      lines.push(`- Positifs : ${decision.yesTotal}/23`);
+      lines.push(`- Points de vigilance positifs : ${decision.yesSensitive}`);
+      lines.push(`- Décision : ${decision.vigilance ? "VIGILANCE déclenchée" : "Vigilance non déclenchée"}`);
+      lines.push("");
+      lines.push("À faire immédiatement :");
+      for (const a of recos.now) lines.push(`• ${a}`);
+      lines.push("");
+      lines.push("À faire ensuite :");
+      for (const a of recos.later) lines.push(`• ${a}`);
+      return lines.join("\n");
+    }
+
+    function resetAll() {
+      for (const k of Object.keys(state.answers)) state.answers[k] = null;
+      state.idx = 0;
+      state.last = null;
+      $("copyToast").classList.add("hidden");
+      showScreen("home");
+    }
+
+    // Events
+    $("btnStart").addEventListener("click", () => {
+      state.idx = 0;
+      showScreen("quiz");
+      renderQuestion();
+    });
+
+    $("btnPrev").addEventListener("click", () => {
+      if (state.idx > 0) state.idx--;
+      renderQuestion();
+    });
+
+    $("btnNext").addEventListener("click", () => {
+      if (state.idx < QUESTIONS.length - 1) state.idx++;
+      renderQuestion();
+    });
+
+    document.querySelectorAll("[data-answer]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        setAnswer(btn.getAttribute("data-answer"));
+        if (state.idx < QUESTIONS.length - 1) {
+          state.idx++;
+          renderQuestion();
+        } else {
+          renderQuestion();
+        }
+      });
+    });
+
+    $("btnCompute").addEventListener("click", () => {
+      showScreen("result");
+      renderResults();
+    });
+
+    $("btnRestart").addEventListener("click", resetAll);
+    $("btnResetTop").addEventListener("click", resetAll);
+
+    $("btnCopy").addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(buildCopyText());
+        $("copyToast").classList.remove("hidden");
+        setTimeout(() => $("copyToast").classList.add("hidden"), 2500);
+      } catch (e) {
+        alert("Copie impossible sur ce navigateur (clipboard bloqué). Astuce : réessayer après installation sur l’écran d’accueil.");
+      }
+    });
+
+    // Theme toggle (system / light / dark) simple
+    const THEME_KEY = "scheme";
+    const THEMES = ["system","light","dark"];
+    function cycleTheme() {
+      let cur = document.documentElement.getAttribute("data-fr-scheme") || "system";
+      let i = THEMES.indexOf(cur);
+      let next = THEMES[(i + 1) % THEMES.length];
+      document.documentElement.setAttribute("data-fr-scheme", next);
+      try { localStorage.setItem(THEME_KEY, next); } catch(e){}
+      $("btnTheme").textContent = "Thème: " + (next === "system" ? "auto" : next);
+    }
+    $("btnTheme").addEventListener("click", cycleTheme);
+
+    // Init theme button label
+    (function initThemeLabel() {
+      let cur = document.documentElement.getAttribute("data-fr-scheme") || "system";
+      $("btnTheme").textContent = "Thème: " + (cur === "system" ? "auto" : cur);
+    })();
+  </script>
+</body>
+</html>
