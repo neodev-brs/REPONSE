@@ -88,6 +88,28 @@
     line-height: 1.2;
   }
 
+  /* Grille Oui / Non pleine largeur */
+.answer-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+/* Gros boutons terrain */
+.answer-btn {
+  height: 90px;
+  font-size: 1.3rem;
+  font-weight: 600;
+}
+
+/* NSP en dessous, plus discret */
+.answer-unknown {
+  width: 100%;
+  margin-top: 14px;
+  height: 60px;
+}
+
   </style>
 </head>
 
@@ -163,11 +185,14 @@
         <p class="question" id="questionText">…</p>
         <p class="fr-text--xs muted fr-mt-1w" id="questionHint"></p>
 
-        <div class="btn-grid">
-          <button class="fr-btn fr-btn--lg" data-answer="yes" type="button">Oui</button>
-          <button class="fr-btn fr-btn--lg fr-btn--secondary" data-answer="no" type="button">Non</button>
-          <button class="fr-btn fr-btn--lg fr-btn--tertiary" data-answer="unknown" type="button">NSP / Inconnu</button>
+        <div class="answer-grid">
+          <button class="fr-btn fr-btn--lg answer-btn" data-answer="yes">Oui</button>
+          <button class="fr-btn fr-btn--lg answer-btn" data-answer="no">Non</button>
         </div>
+
+        <button class="fr-btn fr-btn--secondary fr-btn--lg answer-unknown" data-answer="unknown">
+          NSP / Inconnu
+        </button>
 
         <div class="nav-row">
           <button id="btnPrev" class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-arrow-left-line" type="button">
