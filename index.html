@@ -25,6 +25,7 @@
   </script>
 
   <style>
+    /* CSS */
     :root { --pad: 14px; }
     body { background: var(--background-alt-grey); }
     .app { min-height: 100dvh; display: flex; flex-direction: column; }
@@ -32,38 +33,19 @@
     .screen.is-active { display:block; }
     .card {
       background: #fff;
-      border-radius: 14px;
       padding: 16px;
       box-shadow: 0 2px 12px rgba(0,0,0,.06);
     }
     .muted { opacity:.75; }
     .question { font-size: 1.15rem; line-height: 1.35; margin: 0; }
-    .btn-grid { display:grid; grid-template-columns: 1fr; gap: 10px; margin-top: 14px; }
     .nav-row { display:flex; gap: 10px; margin-top: 14px; }
     .nav-row > button { flex:1; }
     .cols { display:grid; grid-template-columns:1fr; gap: 12px; }
     @media (min-width: 520px) { .cols { grid-template-columns:1fr 1fr; } }
-    .list-card { box-shadow:none; border:1px solid #e5e5e5; border-radius: 12px; padding: 12px; }
+    .list-card { box-shadow:none; border:1px solid #e5e5e5; border-radius: 0px; padding: 12px; }
     ul.clean { margin: 0; padding-left: 18px; }
     ul.clean li { margin: 6px 0; }
 
-    .topbar {
-      padding: 10px var(--pad);
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap: 10px;
-    }
-    .brand {
-      display:flex; align-items:center; gap:10px;
-      font-weight: 700;
-    }
-    .brand .dot {
-      width: 10px; height: 10px; border-radius: 999px;
-      background: var(--text-action-high-blue-france);
-    }
-    .actions { display:flex; gap:8px; align-items:center; }
-    .smallbtn { padding: 6px 10px; font-size: .9rem; }
     .hidden { display:none !important; }
 
     .fr-header {
@@ -88,12 +70,18 @@
       line-height: 1.2;
     }
 
-    /* L'écran quiz laisse de la place au dock en bas */
-    #screen-quiz {
-      padding-bottom: 170px; /* hauteur du dock + marge */
+    /* Empêche le scroll global (sauf résultats) */
+    html, body {
+      height: 100%;
+      overflow: hidden;
     }
 
-    /* Dock fixe en bas (pouce stable) */
+    /* Écran quiz : on réserve de la place au dock */
+    #screen-quiz {
+      padding-bottom: 190px; /* dock + safe area */
+    }
+
+    /* Dock fixe en bas */
     .answer-dock {
       position: fixed;
       left: 0;
@@ -105,45 +93,57 @@
       z-index: 50;
     }
 
-    /* Bouton NSP au-dessus, pleine largeur */
-    .answer-unknown {
-      width: 100%;
-      height: 56px;
-      font-size: 1.05rem;
-      font-weight: 600;
-      margin-bottom: 10px;
-    }
-
     /* Oui/Non : 2 gros pavés symétriques */
     .answer-split {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 10px;
+      gap: 12px;
     }
 
-    /* Pavés grands, adaptés gants/pluie */
+    /* Centrage parfait du texte + gros pour gants/pluie */
     .answer-yes,
-    .answer-no {
-      width: 100%;
-      height: 92px;          /* gros = gants */
-      font-size: 1.6rem;     /* lisible */
-      font-weight: 800;
-      letter-spacing: 0.04em;
-      border-radius: 14px;
-    }
-
-    /* NSP en dessous, plus discret */
+    .answer-no,
     .answer-unknown {
       width: 100%;
-      margin-top: 14px;
-      height: 60px;
+      display: flex;               /* ✅ centre vertical/horizontal */
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      white-space: nowrap;
     }
 
+    /* OUI / NON : très gros */
+    .answer-yes,
+    .answer-no {
+      height: 96px;
+      font-size: 1.7rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      border-radius: 0;            /* ✅ DSFR : pas arrondi */
+    }
+
+    /* NSP en dessous */
+    .answer-unknown {
+      margin-top: 12px;
+      height: 60px;
+      font-size: 1.05rem;
+      font-weight: 700;
+      border-radius: 0;            /* ✅ DSFR : pas arrondi */
+    }
+
+    /* On cache la nav sur mobile (pouce stable) */
     @media (max-width: 520px) {
       .nav-row,
       #btnCompute {
         display: none !important;
       }
+    }
+
+    /* Résultats : seul écran scrollable */
+    #screen-result {
+      overflow: auto;
+      -webkit-overflow-scrolling: touch;
+      height: calc(100dvh - 120px); /* 120px ≈ hauteur header DSFR ; ajuste si besoin */
     }
 
   </style>
@@ -222,18 +222,14 @@
         <p class="fr-text--xs muted fr-mt-1w" id="questionHint"></p>
 
         <div class="answer-dock">
-          <button class="fr-btn fr-btn--secondary answer-unknown" data-answer="unknown" type="button">
+          <div class="answer-split">
+            <button class="fr-btn fr-btn--lg answer-yes" data-answer="yes" type="button">OUI</button>
+            <button class="fr-btn fr-btn--lg answer-no" data-answer="no" type="button">NON</button>
+          </div>
+
+          <button class="fr-btn fr-btn--secondary fr-btn--lg answer-unknown" data-answer="unknown" type="button">
             NSP / Inconnu
           </button>
-
-          <div class="answer-split">
-            <button class="fr-btn fr-btn--lg answer-yes" data-answer="yes" type="button">
-              OUI
-            </button>
-            <button class="fr-btn fr-btn--lg answer-no" data-answer="no" type="button">
-              NON
-            </button>
-          </div>
         </div>
 
         <div class="nav-row">
@@ -501,18 +497,6 @@
     $("btnNext").addEventListener("click", () => {
       if (state.idx < QUESTIONS.length - 1) state.idx++;
       renderQuestion();
-    });
-
-    document.querySelectorAll("[data-answer]").forEach(btn => {
-      btn.addEventListener("click", () => {
-        setAnswer(btn.getAttribute("data-answer"));
-        if (state.idx < QUESTIONS.length - 1) {
-          state.idx++;
-          renderQuestion();
-        } else {
-          renderQuestion();
-        }
-      });
     });
 
     $("btnCompute").addEventListener("click", () => {
