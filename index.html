@@ -139,11 +139,12 @@
       }
     }
 
-    /* Résultats : seul écran scrollable */
+    /* Résultats : seul écran scrollable + marge bas pour ne rien masquer */
     #screen-result {
       overflow: auto;
       -webkit-overflow-scrolling: touch;
-      height: calc(100dvh - 120px); /* 120px ≈ hauteur header DSFR ; ajuste si besoin */
+      height: calc(100dvh - 120px); /* ton réglage actuel */
+      padding-bottom: calc(90px + env(safe-area-inset-bottom)); /* ✅ IMPORTANT */
     }
 
   </style>
@@ -179,9 +180,9 @@
     <!-- HOME -->
     <main id="screen-home" class="screen is-active">
       <div class="card">
-        <h1 class="fr-h4 fr-mb-1w">Violences familiales</h1>
+        <h1 class="fr-h4 fr-mb-1w">Violences conjugales</h1>
         <p class="fr-text--sm muted fr-mb-2w">
-          Questionnaire terrain → seuil de vigilance → orientations
+          Questionnaire terrain d'évaluation du danger pour la prise en compte des violences conjugales.
         </p>
 
         <button id="btnStart" class="fr-btn fr-btn--lg fr-btn--icon-left fr-icon-play-line" type="button">
@@ -191,7 +192,7 @@
         <div class="fr-alert fr-alert--info fr-mt-2w">
           <p class="fr-alert__title">Rappel</p>
           <p class="fr-text--sm fr-mb-0">
-            Le questionnaire complété n’a pas vocation à être transmis (victime/partenaires) sans autorisation judiciaire.
+            Le questionnaire complété n’a pas vocation à être transmis (victime ou partenaires) sans autorisation judiciaire.
           </p>
         </div>
 
@@ -213,7 +214,6 @@
       <div class="card">
         <div id="sensitiveBadgeWrap" class="fr-mb-1w hidden">
           <span class="fr-badge fr-badge--warning">
-            <span class="fr-icon-alert-fill" aria-hidden="true"></span>
             Point de vigilance
           </span>
         </div>
@@ -228,7 +228,7 @@
           </div>
 
           <button class="fr-btn fr-btn--secondary fr-btn--lg answer-unknown" data-answer="unknown" type="button">
-            NSP / Inconnu
+            NE SAIT PAS / INCONNU
           </button>
         </div>
 
@@ -246,7 +246,7 @@
         </button>
 
         <p class="fr-text--xs muted fr-mt-1w">
-          Astuce : toucher “Oui/Non/NSP” passe automatiquement à la question suivante.
+          Astuce : Selectionnez une réponse pour passer automatiquement à la question suivante.
         </p>
       </div>
     </main>
