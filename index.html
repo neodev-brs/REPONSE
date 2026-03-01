@@ -490,20 +490,36 @@
       }
     });
 
-        window.addEventListener("DOMContentLoaded", () => {
-            const header = document.querySelector(".fr-header");
-            if (!header) return;
+      window.addEventListener("DOMContentLoaded", () => {
+        const header = document.querySelector(".fr-header");
+        if (!header) return;
 
-            header.style.cursor = "pointer";
+        header.style.cursor = "pointer";
 
-            // Capture=true pour être sûr même si DSFR stoppe des events
-            header.addEventListener("click", (e) => {
-                // si un jour tu ajoutes des boutons dans le header, on évite de casser
-                if (e.target.closest("button, a, input")) return;
+        // Capture=true pour être sûr même si DSFR stoppe des events
+        header.addEventListener("click", (e) => {
+        // si un jour tu ajoutes des boutons dans le header, on évite de casser
+        if (e.target.closest("button, a, input")) return;
 
-                window.location.reload();
-            }, true);
-            });
+        window.location.reload();
+    }, true);
+    });
+
+    // VIBRATION BREVE AU PASSAGE A LA QUESTION SUIVANTE
+    document.querySelectorAll("[data-answer]").forEach(btn => {
+      btn.addEventListener("click", () => {
+
+        if (navigator.vibrate) navigator.vibrate(25);
+
+        setAnswer(btn.getAttribute("data-answer"));
+        if (state.idx < QUESTIONS.length - 1) {
+          state.idx++;
+          renderQuestion();
+        } else {
+          renderQuestion();
+        }
+      });
+    });
 
   </script>
 
