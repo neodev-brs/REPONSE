@@ -538,12 +538,17 @@
         if (navigator.vibrate) navigator.vibrate(25);
 
         setAnswer(btn.getAttribute("data-answer"));
-        if (state.idx < QUESTIONS.length - 1) {
-          state.idx++;
-          renderQuestion();
-        } else {
-          renderQuestion();
+
+        // ✅ Si dernière question : on affiche le résultat
+        if (state.idx >= QUESTIONS.length - 1) {
+          showScreen("result");
+          renderResults();
+          return;
         }
+
+        // Sinon : question suivante
+        state.idx++;
+        renderQuestion();
       });
     });
 
